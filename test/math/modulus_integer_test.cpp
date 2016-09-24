@@ -17,6 +17,21 @@ TEST(ModulusIntegerTest, UnaryOperations){
 	EXPECT_EQ(*(-mint(0)), 0);
 }
 
+TEST(ModulusIntegerTest, Comparators){
+	const int numbers[] = { 0, 100, MOD - 1, MOD, MOD + 100, MOD + 101 };
+	for(const int a : numbers){
+		for(const int b : numbers){
+			const int ma = a % MOD, mb = b % MOD;
+			EXPECT_EQ(ma == mb, mint(a) == mint(b));
+			EXPECT_EQ(ma != mb, mint(a) != mint(b));
+			EXPECT_EQ(ma <  mb, mint(a) <  mint(b));
+			EXPECT_EQ(ma <= mb, mint(a) <= mint(b));
+			EXPECT_EQ(ma >  mb, mint(a) >  mint(b));
+			EXPECT_EQ(ma >= mb, mint(a) >= mint(b));
+		}
+	}
+}
+
 TEST(ModulusIntegerTest, BinaryOperations){
 	mint x(200);
 	x += mint(MOD - 100);
