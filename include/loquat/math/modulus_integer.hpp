@@ -34,7 +34,7 @@ public:
 	int operator*() const { return m_value; }
 
 
-	self_type& operator=(const self_type &x){
+	self_type& operator=(const self_type& x){
 		m_value = x.m_value;
 		return *this;
 	}
