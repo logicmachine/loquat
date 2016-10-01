@@ -2,6 +2,7 @@
 #include <vector>
 #include <initializer_list>
 #include <algorithm>
+#include <iterator>
 #include <cassert>
 #include "loquat/math/bitmanip.hpp"
 
@@ -40,7 +41,19 @@ public:
 
 	segment_tree(
 		size_t size,
-		const value_type& x = value_type(),
+		const Func& func = Func())
+		: m_actual_size(size)
+		, m_values(bitmanip::clp2(m_actual_size) * 2 - 1)
+		, m_function(func)
+	{
+		const auto it = m_values.begin() + m_values.size() / 2;
+		std::fill(it, it + m_actual_size, value_type());
+		initialize();
+	}
+
+	segment_tree(
+		size_t size,
+		const value_type& x,
 		const Func& func = Func())
 		: m_actual_size(size)
 		, m_values(bitmanip::clp2(m_actual_size) * 2 - 1)
@@ -149,6 +162,65 @@ public:
 	}
 
 };
+
+
+template <typename T, typename F>
+segment_tree<T, F> make_segment_tree(size_t n, F&& f){
+	return segment_tree<T, F>(n, std::forward<F>(f));
+}
+
+template <typename T>
+auto make_segment_tree(size_t n, T (*f)(T, T))
+	-> segment_tree<T, decltype(f)>
+{
+	return segment_tree<T, decltype(f)>(n, f);
+}
+
+template <typename T>
+auto make_segment_tree(size_t n, const T& (*f)(const T&, const T&))
+	-> segment_tree<T, decltype(f)>
+{
+	return segment_tree<T, decltype(f)>(n, f);
+}
+
+
+template <typename Iterator, typename F>
+auto make_segment_tree(Iterator first, Iterator last, F&& f)
+	-> segment_tree<typename std::iterator_traits<Iterator>::value_type, F>
+{
+	using value_type = typename std::iterator_traits<Iterator>::value_type;
+	return segment_tree<value_type, F>(first, last, std::forward<F>(f));
+}
+
+template <typename Iterator>
+auto make_segment_tree(
+	Iterator first,
+	Iterator last,
+	typename std::iterator_traits<Iterator>::value_type (*f)(
+		typename std::iterator_traits<Iterator>::value_type,
+		typename std::iterator_traits<Iterator>::value_type))
+	-> segment_tree<
+		typename std::iterator_traits<Iterator>::value_type,
+		decltype(f)>
+{
+	using value_type = typename std::iterator_traits<Iterator>::value_type;
+	return segment_tree<value_type, decltype(f)>(first, last, f);
+}
+
+template <typename Iterator>
+auto make_segment_tree(
+	Iterator first,
+	Iterator last,
+	const typename std::iterator_traits<Iterator>::value_type& (*f)(
+		const typename std::iterator_traits<Iterator>::value_type&,
+		const typename std::iterator_traits<Iterator>::value_type&))
+	-> segment_tree<
+		typename std::iterator_traits<Iterator>::value_type,
+		decltype(f)>
+{
+	using value_type = typename std::iterator_traits<Iterator>::value_type;
+	return segment_tree<value_type, decltype(f)>(first, last, f);
+}
 
 }
 
