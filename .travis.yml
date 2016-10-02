@@ -1,6 +1,8 @@
 language: cpp
 compiler:
   - g++
+before_install:
+  - pip install --user cpp-coveralls
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
   - mkdir test/build && cd test/build
@@ -8,6 +10,9 @@ install:
   - make
 script:
   - ./loquat-test
+after_success:
+  - cd ../..
+  - coveralls -r `pwd` -E "`pwd`/test/.*" --gcov=gcov-4.8 --gcov-options '\-lp'
 addons:
   apt:
     sources:
