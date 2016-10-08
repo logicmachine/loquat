@@ -63,6 +63,7 @@ TEST(SegmentTreeTest, QueryAndUpdate){
 		EXPECT_EQ(*it, ~(1ull << i));
 	}
 	for(size_t l = 0; l < n; ++l){
+		EXPECT_EQ(st.query(l, l), uint64_t());
 		for(size_t r = l + 1; r <= n; ++r){
 			uint64_t expect = ~0ull;
 			for(size_t k = l; k < r; ++k){ expect &= ~(1ull << k); }

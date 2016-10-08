@@ -215,6 +215,10 @@ TEST(DynamicBitsetTest, Set){
 	}
 	set_all.set();
 	EXPECT_EQ(set_all, bs);
+	for(size_t i = 0; i < n; ++i){
+		bs.set(i, false);
+		EXPECT_FALSE(bs.test(i));
+	}
 }
 
 TEST(DynamicBitsetTest, Reset){
