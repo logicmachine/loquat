@@ -11,6 +11,7 @@ include_directories(../include)
 file(GLOB TEST_SOURCES
      "main.cpp"
      "container/*.cpp"
+     "graph/*.cpp"
      "math/*.cpp")
 
 set(COMPILE_OPTIONS "-std=c++11 -Wall -Wextra")
