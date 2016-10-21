@@ -20,9 +20,11 @@ using to = to_;
 template <typename T>
 struct weight_ {
 
-	T weight;
+	using weight_type = T;
 
-	explicit weight_(const T& w)
+	weight_type weight;
+
+	explicit weight_(const weight_type& w)
 		: weight(w)
 	{ }
 
@@ -35,9 +37,11 @@ using weight = weight_<T>;
 template <typename T>
 struct capacity_ {
 
-	T capacity;
+	using capacity_type = T;
 
-	explicit capacity_(const T& c)
+	capacity_type capacity;
+
+	explicit capacity_(const capacity_type& c)
 		: capacity(c)
 	{ }
 
