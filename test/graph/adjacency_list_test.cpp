@@ -14,7 +14,7 @@ TEST(AdjacencyListTest, AddEdge){
 	EXPECT_EQ(3u, g.size());
 	g.add_edge(0, 1, 10);
 	g.add_edge(1, 0, 11);
-	g.add_edge(1, 2, 12);
+	g.add_edge(1, edge(2, 12));
 	EXPECT_EQ(1u, g[0].size());
 	EXPECT_EQ(1u, g[0][0].to);
 	EXPECT_EQ(10, g[0][0].weight);

@@ -31,3 +31,13 @@ TEST(EdgeTest, MultipleParameters){
 	EXPECT_EQ(1, e.capacity);
 }
 
+TEST(EdgeTest, DefaultConstruct){
+	using edge = loquat::edge<
+		loquat::edge_param::weight<double>,
+		loquat::edge_param::capacity<int>>;
+	edge e;
+	EXPECT_EQ(0u,  e.to);
+	EXPECT_EQ(0.0, e.weight);
+	EXPECT_EQ(0,   e.capacity);
+}
+

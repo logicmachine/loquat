@@ -8,7 +8,7 @@ struct to_ {
 
 	size_t to;
 
-	explicit to_(size_t t)
+	explicit to_(size_t t = 0)
 		: to(t)
 	{ }
 
@@ -24,7 +24,7 @@ struct weight_ {
 
 	weight_type weight;
 
-	explicit weight_(const weight_type& w)
+	explicit weight_(const weight_type& w = weight_type())
 		: weight(w)
 	{ }
 
@@ -41,7 +41,7 @@ struct capacity_ {
 
 	capacity_type capacity;
 
-	explicit capacity_(const capacity_type& c)
+	explicit capacity_(const capacity_type& c = capacity_type())
 		: capacity(c)
 	{ }
 
@@ -58,6 +58,11 @@ namespace detail {
 template <typename T, typename... Params>
 struct edge_param_wrapper : public T, edge_param_wrapper<Params...> {
 
+	edge_param_wrapper()
+		: T()
+		, edge_param_wrapper<Params...>()
+	{ }
+
 	template <typename U, typename... Args>
 	explicit edge_param_wrapper(U&& x, Args&&... args)
 		: T(std::forward<U>(x))
@@ -69,6 +74,10 @@ struct edge_param_wrapper : public T, edge_param_wrapper<Params...> {
 
 template <typename T>
 struct edge_param_wrapper<T> : public T {
+
+	edge_param_wrapper()
+		: T()
+	{ }
 
 	template <typename U>
 	explicit edge_param_wrapper(U&& x)
@@ -82,6 +91,10 @@ struct edge_param_wrapper<T> : public T {
 
 template <typename... Params>
 struct edge : public detail::edge_param_wrapper<edge_param::to_, Params...> {
+
+	edge()
+		: detail::edge_param_wrapper<edge_param::to_, Params...>()
+	{ }
 
 	template <typename... Args>
 	explicit edge(Args&&... args)

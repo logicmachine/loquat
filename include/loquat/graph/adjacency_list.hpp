@@ -28,7 +28,7 @@ public:
 	}
 
 
-	const edge_list &operator[](size_t u) const {
+	const edge_list& operator[](size_t u) const {
 		return m_edges[u];
 	}
 
@@ -36,6 +36,10 @@ public:
 	template <typename... Args>
 	void add_edge(size_t from, Args&&... args){
 		m_edges[from].emplace_back(std::forward<Args>(args)...);
+	}
+
+	void add_edge(size_t from, const edge_type& e){
+		m_edges[from].emplace_back(e);
 	}
 
 };
