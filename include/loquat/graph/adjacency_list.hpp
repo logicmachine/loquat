@@ -32,6 +32,10 @@ public:
 		return m_edges[u];
 	}
 
+	edge_list& operator[](size_t u){
+		return m_edges[u];
+	}
+
 
 	template <typename... Args>
 	void add_edge(size_t from, Args&&... args){
