@@ -1,4 +1,5 @@
 #pragma once
+#include "loquat/graph/adjacency_list.hpp"
 
 namespace loquat {
 namespace test {
@@ -6,13 +7,13 @@ namespace test {
 template <typename EdgeType>
 bool validate_sssp_result(
 	const std::vector<typename EdgeType::weight_type>& result,
-	size_t source,
+	vertex_t source,
 	const adjacency_list<EdgeType>& graph)
 {
 	using weight_type = typename EdgeType::weight_type;
 	const size_t n = graph.size();
 	adjacency_list<EdgeType> inv_graph(n);
-	for(size_t u = 0; u < n; ++u){
+	for(vertex_t u = 0; u < n; ++u){
 		for(const auto& e : graph[u]){
 			inv_graph.add_edge(e.to, u, e.weight);
 		}
@@ -25,7 +26,7 @@ bool validate_sssp_result(
 
 	if(result.size() != n){ return false; }
 	if(result[source] != 0){ return false; }
-	for(size_t v = 0; v < n; ++v){
+	for(vertex_t v = 0; v < n; ++v){
 		if(v == source){ continue; }
 		auto expect = std::numeric_limits<weight_type>::has_infinity
 			? std::numeric_limits<weight_type>::infinity()

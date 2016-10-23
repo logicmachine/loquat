@@ -15,11 +15,11 @@ TEST(ResidualNetworkTest, MakeResidual){
 			graph, engine, std::uniform_int_distribution<int>(0, 100));
 		const auto residual = loquat::make_residual(graph);
 		std::vector<std::vector<bool>> checked(n);
-		for(size_t i = 0; i < n; ++i){
+		for(loquat::vertex_t i = 0; i < n; ++i){
 			EXPECT_GE(residual[i].size(), graph[i].size());
 			checked[i].assign(residual[i].size(), false);
 		}
-		for(size_t u = 0; u < n; ++u){
+		for(loquat::vertex_t u = 0; u < n; ++u){
 			const auto m = graph[u].size();
 			for(size_t i = 0; i < m; ++i){
 				const auto& orig = graph[u][i];
@@ -59,11 +59,11 @@ TEST(ResidualNetworkTest, MakeResidualWithWeight){
 			graph, engine, std::uniform_int_distribution<int>(0, 100));
 		const auto residual = loquat::make_residual(graph);
 		std::vector<std::vector<bool>> checked(n);
-		for(size_t i = 0; i < n; ++i){
+		for(loquat::vertex_t i = 0; i < n; ++i){
 			EXPECT_GE(residual[i].size(), graph[i].size());
 			checked[i].assign(residual[i].size(), false);
 		}
-		for(size_t u = 0; u < n; ++u){
+		for(loquat::vertex_t u = 0; u < n; ++u){
 			const auto m = graph[u].size();
 			for(size_t i = 0; i < m; ++i){
 				const auto& orig = graph[u][i];

@@ -1,4 +1,5 @@
 #pragma once
+#include "loquat/graph/types.hpp"
 
 namespace loquat {
 
@@ -6,9 +7,9 @@ namespace edge_param {
 
 struct to_ {
 
-	size_t to;
+	vertex_t to;
 
-	explicit to_(size_t t = 0)
+	explicit to_(vertex_t t = 0)
 		: to(t)
 	{ }
 

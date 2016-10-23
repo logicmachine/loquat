@@ -39,8 +39,8 @@ public:
 		const auto n = m_num_vertices;
 		std::uniform_real_distribution<> e_dist(0.0, 1.0);
 		adjacency_list<edge_type> graph(n);
-		for(size_t u = 0; u < n; ++u){
-			for(size_t v = 0; v < n; ++v){
+		for(loquat::vertex_t u = 0; u < n; ++u){
+			for(loquat::vertex_t v = 0; v < n; ++v){
 				if(u == v && !m_has_self_loop){ continue; }
 				if(e_dist(random) >= m_edge_rate){ continue; }
 				edge_type e;
@@ -61,7 +61,7 @@ void randomize_weights(
 	Distribution distribution)
 {
 	const auto n = graph.size();
-	for(size_t u = 0; u < n; ++u){
+	for(loquat::vertex_t u = 0; u < n; ++u){
 		for(auto& e : graph[u]){ e.weight = distribution(random); }
 	}
 }
@@ -73,7 +73,7 @@ void randomize_capacities(
 	Distribution distribution)
 {
 	const auto n = graph.size();
-	for(size_t u = 0; u < n; ++u){
+	for(loquat::vertex_t u = 0; u < n; ++u){
 		for(auto& e : graph[u]){ e.capacity = distribution(random); }
 	}
 }

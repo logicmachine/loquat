@@ -7,9 +7,9 @@ namespace loquat {
 
 template <typename EdgeType>
 std::vector<typename EdgeType::weight_type>
-sssp_dijkstra(size_t source, const adjacency_list<EdgeType>& graph){
+sssp_dijkstra(vertex_t source, const adjacency_list<EdgeType>& graph){
 	using weight_type = typename EdgeType::weight_type;
-	using pair_type = std::pair<weight_type, size_t>;
+	using pair_type = std::pair<weight_type, vertex_t>;
 	using queue_type = std::priority_queue<
 		pair_type, std::vector<pair_type>, std::greater<pair_type>>;
 	const auto inf = std::numeric_limits<weight_type>::has_infinity

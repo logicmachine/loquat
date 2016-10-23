@@ -35,7 +35,7 @@ struct residual_edge : public EdgeType {
 	{ }
 
 	template <typename... Args>
-	residual_edge(size_t to, size_t rev, Args&&... args)
+	residual_edge(vertex_t to, size_t rev, Args&&... args)
 		: base_type(to, std::forward<Args>(args)...)
 		, rev(rev)
 	{ }
@@ -56,12 +56,12 @@ make_residual(const adjacency_list<EdgeType>& graph){
 	using capacity_type = typename edge_type::capacity_type;
 	const size_t n = graph.size();
 	adjacency_list<residual_type> result(n);
-	for(size_t u = 0; u < n; ++u){
+	for(vertex_t u = 0; u < n; ++u){
 		for(const auto& e : graph[u]){
 			result.add_edge(u, residual_type(e, 0));
 		}
 	}
-	for(size_t u = 0; u < n; ++u){
+	for(vertex_t u = 0; u < n; ++u){
 		const size_t m = graph[u].size();
 		for(size_t i = 0; i < m; ++i){
 			auto e = graph[u][i];
