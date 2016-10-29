@@ -12,7 +12,8 @@ file(GLOB TEST_SOURCES
      "main.cpp"
      "container/*.cpp"
      "graph/*.cpp"
-     "math/*.cpp")
+     "math/*.cpp"
+     "misc/*.cpp")
 
 set(COMPILE_OPTIONS "-std=c++11 -Wall -Wextra")
 set(LINK_OPTIONS    " ")
