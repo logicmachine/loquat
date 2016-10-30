@@ -19,8 +19,8 @@ private:
 	adjacency_list<edge_type>& m_graph;
 	std::vector<size_t> m_levels;
 	std::vector<size_t> m_iterations;
-	size_t m_source;
-	size_t m_sink;
+	vertex_t m_source;
+	vertex_t m_sink;
 
 	maxflow_dinitz_impl() = delete;
 	maxflow_dinitz_impl(const maxflow_dinitz_impl&) = delete;
@@ -36,7 +36,7 @@ private:
 		, m_sink(sink)
 	{ }
 
-	std::vector<size_t> compute_level_map(size_t source) const {
+	std::vector<size_t> compute_level_map(vertex_t source) const {
 		const auto n = m_graph.size();
 		std::vector<size_t> levels(n, 0);
 		std::queue<vertex_t> q;
@@ -106,7 +106,11 @@ public:
 
 template <typename EdgeType>
 typename EdgeType::capacity_type
-maxflow_dinitz(size_t source, size_t sink, adjacency_list<EdgeType>& graph){
+maxflow_dinitz(
+	vertex_t source,
+	vertex_t sink,
+	adjacency_list<EdgeType>& graph)
+{
 	using edge_type = EdgeType;
 	return detail::maxflow_dinitz_impl<edge_type>::solve(source, sink, graph);
 }
