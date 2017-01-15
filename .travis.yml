@@ -3,6 +3,7 @@ compiler:
   - g++
 before_install:
   - pip install --user cpp-coveralls
+  - pip install --user "requests[security]"
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
   - mkdir test/build && cd test/build
