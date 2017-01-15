@@ -12,6 +12,7 @@ class mo_algorithm {
 public:
 	using behavior_type = Behavior;
 	using value_type = typename behavior_type::value_type;
+	using state_type = typename behavior_type::state_type;
 	using result_type = typename behavior_type::result_type;
 
 private:
@@ -50,14 +51,20 @@ public:
 		for(auto& bucket : buckets){
 			if(bucket.empty()){ continue; }
 			std::sort(bucket.begin(), bucket.end());
-			result_type r = m_behavior.empty();
+			state_type s = m_behavior.empty();
 			size_t cl = std::get<1>(bucket.front()), cr = cl;
 			for(const auto& t : bucket){
 				const size_t nl = std::get<1>(t), nr = std::get<0>(t);
-				while(cr < nr){ r = m_behavior.add_tail(r, m_values[cr++]); }
-				while(cl > nl){ r = m_behavior.add_head(m_values[--cl], r); }
-				while(cl < nl){ r = m_behavior.remove(m_values[cl++], r); }
-				results[std::get<2>(t)] = r;
+				while(cr < nr){
+					s = m_behavior.add_tail(std::move(s), m_values[cr++]);
+				}
+				while(cl > nl){
+					s = m_behavior.add_head(m_values[--cl], std::move(s));
+				}
+				while(cl < nl){
+					s = m_behavior.remove(m_values[cl++], std::move(s));
+				}
+				results[std::get<2>(t)] = m_behavior.to_result(s);
 			}
 		}
 		return results;

@@ -6,11 +6,13 @@ namespace {
 
 struct mo_bit_or_behavior {
 	using value_type  = uint64_t;
+	using state_type  = uint64_t;
 	using result_type = uint64_t;
-	result_type empty() const { return 0; }
-	result_type add_head(value_type v, result_type r) const { return v | r; }
-	result_type add_tail(result_type r, value_type v) const { return r | v; }
-	result_type remove(value_type v, result_type r) const { return r & ~v; }
+	state_type empty() const { return 0; }
+	state_type add_head(value_type v, state_type s) const { return v | s; }
+	state_type add_tail(state_type s, value_type v) const { return s | v; }
+	state_type remove(value_type v, state_type s) const { return s & ~v; }
+	result_type to_result(state_type s) const { return s; }
 };
 
 }
