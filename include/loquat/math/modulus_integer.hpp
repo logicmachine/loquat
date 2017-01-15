@@ -151,7 +151,7 @@ inline std::ostream& operator<<(
 	std::ostream& os, const modulus_integer<MOD>& x)
 {
 	os << *x;
-    return os;
+	return os;
 }
 
 }
