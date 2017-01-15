@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include "loquat/graph/adjacency_list.hpp"
+#include "loquat/math/infinity.hpp"
 
 namespace loquat {
 
@@ -12,9 +13,7 @@ sssp_dijkstra(vertex_t source, const adjacency_list<EdgeType>& graph){
 	using pair_type = std::pair<weight_type, vertex_t>;
 	using queue_type = std::priority_queue<
 		pair_type, std::vector<pair_type>, std::greater<pair_type>>;
-	const auto inf = std::numeric_limits<weight_type>::has_infinity
-		? std::numeric_limits<weight_type>::infinity()
-		: std::numeric_limits<weight_type>::max();
+	const auto inf = positive_infinity<weight_type>();
 	const auto n = graph.size();
 	std::vector<weight_type> result(n, inf);
 	queue_type pq;

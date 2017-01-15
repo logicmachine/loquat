@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include "loquat/graph/adjacency_list.hpp"
+#include "loquat/math/infinity.hpp"
 
 namespace loquat {
 
@@ -72,9 +73,7 @@ private:
 	}
 
 	capacity_type solve(){
-		const auto inf = std::numeric_limits<capacity_type>::has_infinity
-			? std::numeric_limits<capacity_type>::infinity()
-			: std::numeric_limits<capacity_type>::max();
+		const auto inf = positive_infinity<capacity_type>();
 		const auto n = m_graph.size();
 		capacity_type flow = 0;
 		while(true){
