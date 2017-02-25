@@ -26,7 +26,8 @@ TEST(StaticMatrixTest, Constructors){
 
 	EXPECT_THROW(matrix2x2({ 1, 2 }), std::logic_error);
 
-	const matrix2x2 d = matrix2x2::identity();
+	const matrix2x2 d =
+		loquat::identity<std::multiplies<matrix2x2>>::value();
 	EXPECT_EQ(d(0, 0), 1);
 	EXPECT_EQ(d(0, 1), 0);
 	EXPECT_EQ(d(1, 0), 0);

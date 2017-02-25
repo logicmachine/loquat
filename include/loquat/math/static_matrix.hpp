@@ -2,6 +2,7 @@
 #include <array>
 #include <initializer_list>
 #include <stdexcept>
+#include "loquat/math/identity.hpp"
 
 namespace loquat {
 
@@ -65,15 +66,6 @@ public:
 	}
 
 
-	static self_type identity(){
-		static_assert(
-			N == M, "identity matrix is not defined for non-square matrix");
-		self_type mat;
-		for(size_t i = 0; i < N; ++i){ mat.m_data[i][i] = 1; }
-		return mat;
-	}
-
-
 	size_t rows() const {
 		return N;
 	}
@@ -87,7 +79,7 @@ public:
 		return m_data[i][j];
 	}
 
-	value_type& operator()(size_t i, size_t j){
+	value_type& operator()(size_t i, size_t j) noexcept {
 		return m_data[i][j];
 	}
 
@@ -203,6 +195,25 @@ static_matrix<T, N, M> operator*(const T& x, const static_matrix<T, N, M>& y){
 	}
 	return z;
 }
+
+
+template <typename T, size_t N, size_t M>
+struct identity<std::plus<static_matrix<T, N, M>>> {
+	static static_matrix<T, N, M> value(){
+		return static_matrix<T, N, M>(identity<std::plus<T>>::value());
+	}
+};
+
+template <typename T, size_t N>
+struct identity<std::multiplies<static_matrix<T, N, N>>> {
+	static static_matrix<T, N, N> value(){
+		static_matrix<T, N, N> a(identity<std::plus<T>>::value());
+		for(size_t i = 0; i < N; ++i){
+			a(i, i) = identity<std::multiplies<T>>::value();
+		}
+		return a;
+	}
+};
 
 }
 
