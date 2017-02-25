@@ -8,25 +8,26 @@
 
 namespace loquat {
 
-template <typename T, typename Func>
+template <typename Behavior>
 class segment_tree {
 
 public:
-	using value_type = T;
+	using behavior_type = Behavior;
+	using value_type = typename behavior_type::value_type;
 	using const_iterator = typename std::vector<value_type>::const_iterator;
 
 
 private:
 	size_t m_actual_size;
 	std::vector<value_type> m_values;
-	Func m_function;
+	behavior_type m_behavior;
 
 
 	void initialize(){
 		const auto m = m_values.size() / 2;
 		for(size_t i = 0; i < m; ++i){
 			const auto k = m - 1 - i;
-			m_values[k] = m_function(
+			m_values[k] = m_behavior.merge(
 				m_values[k * 2 + 1], m_values[k * 2 + 2]);
 		}
 	}
@@ -36,15 +37,15 @@ public:
 	segment_tree() noexcept
 		: m_actual_size(0)
 		, m_values()
-		, m_function()
+		, m_behavior()
 	{ }
 
 	segment_tree(
 		size_t size,
-		const Func& func = Func())
+		const behavior_type& behavior = behavior_type())
 		: m_actual_size(size)
 		, m_values(bitmanip::clp2(m_actual_size) * 2 - 1)
-		, m_function(func)
+		, m_behavior(behavior)
 	{
 		const auto it = m_values.begin() + m_values.size() / 2;
 		std::fill(it, it + m_actual_size, value_type());
@@ -54,10 +55,10 @@ public:
 	segment_tree(
 		size_t size,
 		const value_type& x,
-		const Func& func = Func())
+		const behavior_type& behavior = behavior_type())
 		: m_actual_size(size)
 		, m_values(bitmanip::clp2(m_actual_size) * 2 - 1)
-		, m_function(func)
+		, m_behavior(behavior)
 	{
 		const auto it = m_values.begin() + m_values.size() / 2;
 		std::fill(it, it + m_actual_size, x);
@@ -68,10 +69,10 @@ public:
 	segment_tree(
 		Iterator first,
 		Iterator last,
-		const Func& func = Func())
+		const behavior_type& behavior = behavior_type())
 		: m_actual_size(std::distance(first, last))
 		, m_values(bitmanip::clp2(m_actual_size) * 2 - 1)
-		, m_function(func)
+		, m_behavior(behavior)
 	{
 		const auto it = m_values.begin() + m_values.size() / 2;
 		std::copy(first, last, it);
@@ -80,10 +81,10 @@ public:
 
 	segment_tree(
 		std::initializer_list<value_type> il,
-		const Func& func = Func())
+		const behavior_type& behavior = behavior_type())
 		: m_actual_size(il.size())
 		, m_values(bitmanip::clp2(m_actual_size) * 2 - 1)
-		, m_function(func)
+		, m_behavior(behavior)
 	{
 		const auto it = m_values.begin() + m_values.size() / 2;
 		std::copy(il.begin(), il.end(), it);
@@ -123,7 +124,8 @@ public:
 		m_values[i] = x;
 		while(i > 0){
 			i = (i - 1) / 2;
-			m_values[i] = m_function(m_values[i * 2 + 1], m_values[i * 2 + 2]);
+			m_values[i] = m_behavior.merge(
+				m_values[i * 2 + 1], m_values[i * 2 + 2]);
 		}
 	}
 
@@ -135,26 +137,20 @@ public:
 	value_type query(size_t left, size_t right) const {
 		const auto m = m_values.size() / 2;
 		left += m; right += m;
-		bool l_valid = false, r_valid = false;
-		value_type l_value, r_value;
+		value_type l_value = m_behavior.identity(), r_value = l_value;
 		while(left < right){
 			if((left & 1u) == 0u){
 				const auto& x = m_values[left];
-				l_value = (l_valid ? m_function(l_value, x) : x);
-				l_valid = true;
+				l_value = m_behavior.merge(l_value, x);
 			}
 			if((right & 1u) == 0u){
 				const auto& x = m_values[right - 1];
-				r_value = (r_valid ? m_function(x, r_value) : x);
-				r_valid = true;
+				r_value = m_behavior.merge(x, r_value);
 			}
 			left  = left / 2;
 			right = (right - 1) / 2;
 		}
-		if(l_valid && r_valid){ return m_function(l_value, r_value); }
-		if(l_valid){ return l_value; }
-		if(r_valid){ return r_value; }
-		return m_values.front();
+		return m_behavior.merge(l_value, r_value);
 	}
 
 	value_type query(const_iterator left, const_iterator right) const {
@@ -164,62 +160,19 @@ public:
 };
 
 
-template <typename T, typename F>
-segment_tree<T, F> make_segment_tree(size_t n, F&& f){
-	return segment_tree<T, F>(n, std::forward<F>(f));
+template <typename Behavior>
+segment_tree<Behavior> make_segment_tree(size_t n, Behavior&& behavior){
+	return segment_tree<Behavior>(n, std::forward<Behavior>(behavior));
 }
 
-template <typename T>
-auto make_segment_tree(size_t n, T (*f)(T, T))
-	-> segment_tree<T, decltype(f)>
-{
-	return segment_tree<T, decltype(f)>(n, f);
-}
-
-template <typename T>
-auto make_segment_tree(size_t n, const T& (*f)(const T&, const T&))
-	-> segment_tree<T, decltype(f)>
-{
-	return segment_tree<T, decltype(f)>(n, f);
-}
-
-
-template <typename Iterator, typename F>
-auto make_segment_tree(Iterator first, Iterator last, F&& f)
-	-> segment_tree<typename std::iterator_traits<Iterator>::value_type, F>
-{
-	using value_type = typename std::iterator_traits<Iterator>::value_type;
-	return segment_tree<value_type, F>(first, last, std::forward<F>(f));
-}
-
-template <typename Iterator>
-auto make_segment_tree(
+template <typename Iterator, typename Behavior>
+segment_tree<Behavior> make_segment_tree(
 	Iterator first,
 	Iterator last,
-	typename std::iterator_traits<Iterator>::value_type (*f)(
-		typename std::iterator_traits<Iterator>::value_type,
-		typename std::iterator_traits<Iterator>::value_type))
-	-> segment_tree<
-		typename std::iterator_traits<Iterator>::value_type,
-		decltype(f)>
+	Behavior&& behavior)
 {
-	using value_type = typename std::iterator_traits<Iterator>::value_type;
-	return segment_tree<value_type, decltype(f)>(first, last, f);
-}
-
-template <typename Iterator>
-auto make_segment_tree(
-	Iterator first,
-	Iterator last,
-	const typename std::iterator_traits<Iterator>::value_type& (*f)(
-		const typename std::iterator_traits<Iterator>::value_type&,
-		const typename std::iterator_traits<Iterator>::value_type&))
-	-> segment_tree<
-		typename std::iterator_traits<Iterator>::value_type,
-		decltype(f)>
-{
-	using value_type = typename std::iterator_traits<Iterator>::value_type;
-	return segment_tree<value_type, decltype(f)>(first, last, f);
+	return segment_tree<Behavior>(
+		first, last, std::forward<Behavior>(behavior));
 }
 
 }
