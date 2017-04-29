@@ -74,13 +74,14 @@ private:
 			const auto vl = update(i, lk, l, c, value);
 			const auto vr = m_behavior.modify(
 				r - c, m_values[rk], m_modifiers[rk]);
-			return m_behavior.merge_value(vl, vr);
+			m_values[k] = m_behavior.merge_value(vl, vr);
 		}else{
 			const auto vl = m_behavior.modify(
 				c - l, m_values[lk], m_modifiers[lk]);
 			const auto vr = update(i, rk, c, r, value);
-			return m_behavior.merge_value(vl, vr);
+			m_values[k] = m_behavior.merge_value(vl, vr);
 		}
+		return m_values[k];
 	}
 
 	value_type query(size_t a, size_t b, size_t k, size_t l, size_t r){

@@ -84,12 +84,17 @@ TEST(LazySegmentTreeTest, ConstructWithIteratorPair){
 TEST(LazySegmentTreeTest, RandomQueryAndUpdate){
 	std::default_random_engine engine;
 	for(const size_t n : { 24, 31, 32, 37, 53, 60 }){
-		std::uniform_int_distribution<int> type_dist(0, 2);
+		std::uniform_int_distribution<int> type_dist(0, 3);
 		std::uniform_int_distribution<int> index_dist(0, n - 1);
 		std::uniform_int_distribution<int> modify_dist(1, 10);
 		std::uniform_int_distribution<int> update_dist(1, 100);
 		std::vector<int> naive(n);
 		loquat::lazy_segment_tree<test_behavior> st(n);
+		auto naive_query = [&naive](int l, int r) -> int {
+			int sum = 0;
+			for(int i = l; i < r; ++i){ sum += naive[i]; }
+			return sum;
+		};
 		for(size_t iter = 0; iter < n * n; ++iter){
 			const int type = type_dist(engine);
 			size_t l = index_dist(engine);
@@ -97,10 +102,7 @@ TEST(LazySegmentTreeTest, RandomQueryAndUpdate){
 			if(r > l){ std::swap(l, r); }
 			if(type == 0){
 				// query
-				int expect = 0;
-				for(size_t i = l; i <= r; ++i){ expect += naive[i]; }
-				const int actual = st.query(l, r + 1);
-				EXPECT_EQ(actual, expect);
+				EXPECT_EQ(st.query(l, r + 1), naive_query(l, r + 1));
 			}else if(type == 1){
 				// modify
 				const auto modifier = modify_dist(engine);
@@ -108,12 +110,14 @@ TEST(LazySegmentTreeTest, RandomQueryAndUpdate){
 					naive[i] += modifier + (i - l);
 				}
 				st.modify(l, r + 1, modifier);
+				EXPECT_EQ(st.query(0, n), naive_query(0, n));
 			}else if(type == 2){
 				// update
 				const auto value = update_dist(engine);
 				const size_t i = index_dist(engine);
 				naive[i] = value;
 				st.update(i, value);
+				EXPECT_EQ(st.query(0, n), naive_query(0, n));
 			}
 		}
 	}
