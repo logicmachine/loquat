@@ -55,6 +55,34 @@ private:
 		return m_values[k];
 	}
 
+	value_type update(
+		size_t i, size_t k, size_t l, size_t r,
+		const value_type& value)
+	{
+		if(r - l == 1){
+			m_modifiers[k] = m_behavior.identity_modifier();
+			m_values[k] = value;
+			return value;
+		}
+		const size_t c = l + (r - l) / 2;
+		const size_t lk = k * 2 + 1, rk = lk + 1;
+		const auto mp = m_behavior.split_modifier(m_modifiers[k], c - l);
+		m_modifiers[k] = m_behavior.identity_modifier();
+		modify(l, c, lk, l, c, mp.first);
+		modify(c, r, rk, c, r, mp.first);
+		if(i < c){
+			const auto vl = update(i, lk, l, c, value);
+			const auto vr = m_behavior.modify(
+				r - c, m_values[rk], m_modifiers[rk]);
+			return m_behavior.merge_value(vl, vr);
+		}else{
+			const auto vl = m_behavior.modify(
+				c - l, m_values[lk], m_modifiers[lk]);
+			const auto vr = update(i, rk, c, r, value);
+			return m_behavior.merge_value(vl, vr);
+		}
+	}
+
 	value_type query(size_t a, size_t b, size_t k, size_t l, size_t r){
 		if(r <= a || b <= l){
 			return m_behavior.identity_value();
@@ -118,6 +146,11 @@ public:
 	void modify(size_t left, size_t right, const modifier_type& modifier){
 		const auto clp2_n = (m_values.size() + 1) / 2;
 		modify(left, right, 0, 0, clp2_n, modifier);
+	}
+
+	void update(size_t i, const value_type& value){
+		const auto clp2_n = (m_values.size() + 1) / 2;
+		update(i, 0, 0, clp2_n, value);
 	}
 
 	value_type query(size_t left, size_t right){
