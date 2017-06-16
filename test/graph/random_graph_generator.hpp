@@ -54,6 +54,47 @@ public:
 };
 
 
+template <typename EdgeType>
+class random_tree_generator {
+
+public:
+	using edge_type = EdgeType;
+	using self_type = random_tree_generator<edge_type>;
+
+
+private:
+	size_t m_num_vertices;
+
+
+public:
+	explicit random_tree_generator(size_t n)
+		: m_num_vertices(n)
+	{ }
+
+
+	template <typename Random>
+	adjacency_list<edge_type> generate(Random& random){
+		const auto n = m_num_vertices;
+		std::vector<loquat::vertex_t> parents(n);
+		for(loquat::vertex_t u = 1; u < n; ++u){
+			std::uniform_int_distribution<loquat::vertex_t> dist(0, u - 1);
+			parents[u] = dist(random);
+		}
+		std::vector<loquat::vertex_t> renamer(n);
+		std::iota(renamer.begin(), renamer.end(), 0);
+		std::shuffle(renamer.begin(), renamer.end(), random);
+		adjacency_list<edge_type> graph(n);
+		for(loquat::vertex_t i = 1; i < n; ++i){
+			const auto a = renamer[i], b = renamer[parents[i]];
+			graph.add_edge(a, b);
+			graph.add_edge(b, a);
+		}
+		return graph;
+	}
+
+};
+
+
 template <typename EdgeType, typename Random, typename Distribution>
 void randomize_weights(
 	adjacency_list<EdgeType>& graph,
