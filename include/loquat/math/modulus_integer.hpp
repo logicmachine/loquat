@@ -139,7 +139,7 @@ public:
 
 template <int MOD>
 inline std::istream& operator>>(
-	std::istream& is, const modulus_integer<MOD>& x)
+	std::istream& is, modulus_integer<MOD>& x)
 {
 	int y;
 	is >> y;
