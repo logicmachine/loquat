@@ -18,7 +18,7 @@ TEST(DisjointSetTest, ConstructWithSize){
 	}
 }
 
-TEST(DisjoinSetTest, QueryAndModify){
+TEST(DisjointSetTest, QueryAndModify){
 	std::default_random_engine engine;
 	for(const size_t n : { 3, 16, 127 }){
 		loquat::disjoint_set ds(n);
