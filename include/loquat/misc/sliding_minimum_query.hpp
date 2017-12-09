@@ -2,6 +2,7 @@
 #include <deque>
 #include <functional>
 #include <utility>
+#include <cassert>
 
 namespace loquat {
 
@@ -29,7 +30,12 @@ public:
 		, m_pop_count(0)
 	{ }
 
+	bool empty() const {
+		return m_deque.empty();
+	}
+
 	const value_type& query() const {
+		assert(!m_deque.empty());
 		return m_deque.front().first;
 	}
 
