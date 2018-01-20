@@ -157,6 +157,76 @@ public:
 		return query(left - begin(), right - begin());
 	}
 
+	template <typename F>
+	size_t partition_right(size_t left, const F& func) const {
+		const auto m = m_values.size() / 2;
+		value_type acc = m_behavior.identity();
+		if(!func(acc)){ return left; }
+		size_t pos = left + m;
+		while(pos > 0){
+			const auto t = m_behavior.merge(acc, m_values[pos]);
+			if(func(t)){
+				if(bitmanip::popcount(pos + 2) == 1){
+					return m_actual_size;
+				}else if(pos % 2 == 0){
+					pos = pos / 2;
+				}else{
+					pos = pos + 1;
+				}
+				acc = t;
+			}else{
+				break;
+			}
+		}
+		while(pos * 2 + 2 < m_values.size()){
+			const auto t = m_behavior.merge(acc, m_values[pos * 2 + 1]);
+			if(func(t)){
+				pos = pos * 2 + 2;
+				acc = t;
+			}else{
+				pos = pos * 2 + 1;
+			}
+		}
+		return std::min(pos - m + 1, m_actual_size);
+	}
+
+	const_iterator partition_right(const_iterator left, const_iterator right) const {
+		return begin() + partition_right(left - begin(), right - begin());
+	}
+
+	template <typename F>
+	size_t partition_left(size_t right, const F& func) const {
+		const auto m = m_values.size() / 2;
+		value_type acc = m_behavior.identity();
+		if(right == 0 || !func(acc)){ return right; }
+		size_t pos = right - 1 + m;
+		while(pos > 0){
+			const auto t = m_behavior.merge(acc, m_values[pos]);
+			if(func(t)){
+				if(bitmanip::popcount(pos + 1) == 1){
+					return 0;
+				}else if(pos % 2 == 0){
+					pos = pos - 1;
+				}else{
+					pos = (pos / 2) - 1;
+				}
+				acc = t;
+			}else{
+				break;
+			}
+		}
+		while(pos * 2 + 2 < m_values.size()){
+			const auto t = m_behavior.merge(acc, m_values[pos * 2 + 2]);
+			if(func(t)){
+				pos = pos * 2 + 1;
+				acc = t;
+			}else{
+				pos = pos * 2 + 2;
+			}
+		}
+		return pos - m;
+	}
+
 };
 
 

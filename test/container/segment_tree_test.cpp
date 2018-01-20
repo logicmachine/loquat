@@ -93,6 +93,74 @@ TEST(SegmentTreeTest, QueryAndUpdate){
 	}
 }
 
+TEST(SegmentTreeTest, PartitionRight){
+	const size_t n = 64;
+	loquat::segment_tree<test_plus_behavior> st(n);
+	for(size_t i = 0; i < n; ++i){
+		st.update(i, 1);
+	}
+	for(size_t l = 0; l < n; ++l){
+		for(size_t r = l; r <= n; ++r){
+			const int k = static_cast<int>(r - l);
+			const int expect = r;
+			const int actual = st.partition_right(
+				l, [&](int x){ return x < k; });
+			EXPECT_EQ(actual, expect);
+		}
+	}
+}
+
+TEST(SegmentTreeTest, PartitionRightNotPow2){
+	const size_t n = 0x25;
+	loquat::segment_tree<test_plus_behavior> st(n);
+	for(size_t i = 0; i < n; ++i){
+		st.update(i, 1);
+	}
+	for(size_t l = 0; l < n; ++l){
+		for(size_t r = l; r <= n; ++r){
+			const int k = static_cast<int>(r - l);
+			const int expect = r;
+			const int actual = st.partition_right(
+				l, [&](int x){ return x < k; });
+			EXPECT_EQ(actual, expect);
+		}
+	}
+}
+
+TEST(SegmentTreeTest, PartitionLeft){
+	const size_t n = 64;
+	loquat::segment_tree<test_plus_behavior> st(n);
+	for(size_t i = 0; i < n; ++i){
+		st.update(i, 1);
+	}
+	for(size_t l = 0; l < n; ++l){
+		for(size_t r = l; r <= n; ++r){
+			const int k = static_cast<int>(r - l);
+			const int expect = l;
+			const int actual = st.partition_left(
+				r, [&](int x){ return x < k; });
+			EXPECT_EQ(actual, expect);
+		}
+	}
+}
+
+TEST(SegmentTreeTest, PartitionLeftNotPow2){
+	const size_t n = 0x25;
+	loquat::segment_tree<test_plus_behavior> st(n);
+	for(size_t i = 0; i < n; ++i){
+		st.update(i, 1);
+	}
+	for(size_t l = 0; l < n; ++l){
+		for(size_t r = l; r <= n; ++r){
+			const int k = static_cast<int>(r - l);
+			const int expect = l;
+			const int actual = st.partition_left(
+				r, [&](int x){ return x < k; });
+			EXPECT_EQ(actual, expect);
+		}
+	}
+}
+
 
 namespace {
 
