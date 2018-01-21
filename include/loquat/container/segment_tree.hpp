@@ -190,8 +190,9 @@ public:
 		return std::min(pos - m + 1, m_actual_size);
 	}
 
-	const_iterator partition_right(const_iterator left, const_iterator right) const {
-		return begin() + partition_right(left - begin(), right - begin());
+	template <typename F>
+	const_iterator partition_right(const_iterator left, const F& func) const {
+		return begin() + partition_right(left - begin(), func);
 	}
 
 	template <typename F>
@@ -225,6 +226,11 @@ public:
 			}
 		}
 		return pos - m;
+	}
+
+	template <typename F>
+	const_iterator partition_left(const_iterator right, const F& func) const {
+		return begin() + partition_left(right - begin(), func);
 	}
 
 };
