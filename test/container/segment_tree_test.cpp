@@ -116,15 +116,9 @@ TEST(SegmentTreeTest, PartitionRightOverrun){
 	for(size_t i = 0; i < n; ++i){
 		st.update(i, 1);
 	}
-	for(size_t l = 0; l < n; ++l){
-		for(size_t r = l; r <= n; ++r){
-			const int k = static_cast<int>(r - l);
-			const int expect = std::min<int>(n, l + k * 2);
-			const int actual = st.partition_right(
-				l, [&](int x){ return x < k * 2; });
-			EXPECT_EQ(actual, expect);
-		}
-	}
+	EXPECT_THROW(
+		st.partition_right(0, [&](int){ return true; }),
+		loquat::no_solution_error);
 }
 
 TEST(SegmentTreeTest, PartitionRightNotPow2){
@@ -167,15 +161,12 @@ TEST(SegmentTreeTest, PartitionLeftOverrun){
 	for(size_t i = 0; i < n; ++i){
 		st.update(i, 1);
 	}
-	for(size_t l = 0; l < n; ++l){
-		for(size_t r = l; r <= n; ++r){
-			const int k = static_cast<int>(r - l);
-			const int expect = std::max<int>(0, r - k * 2);
-			const int actual = st.partition_left(
-				r, [&](int x){ return x < k * 2; });
-			EXPECT_EQ(actual, expect);
-		}
-	}
+	EXPECT_THROW(
+		st.partition_left(0, [](int){ return true; }),
+		loquat::no_solution_error);
+	EXPECT_THROW(
+		st.partition_left(n, [](int){ return true; }),
+		loquat::no_solution_error);
 }
 
 TEST(SegmentTreeTest, PartitionLeftNotPow2){
