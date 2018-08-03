@@ -3,6 +3,7 @@
 #include <initializer_list>
 #include <iterator>
 #include "loquat/math/bitmanip.hpp"
+#include "loquat/container/range_query_behavior.hpp"
 
 namespace loquat {
 
@@ -16,7 +17,7 @@ public:
 
 private:
 	std::vector<std::vector<value_type>> m_table;
-	behavior_type m_behavior;
+	range_query_behavior_wrapper<behavior_type> m_behavior;
 
 
 	template <typename Iterator>

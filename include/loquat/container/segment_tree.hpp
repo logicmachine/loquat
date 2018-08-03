@@ -6,6 +6,7 @@
 #include <cassert>
 #include "loquat/math/bitmanip.hpp"
 #include "loquat/misc/exceptions.hpp"
+#include "loquat/container/range_query_behavior.hpp"
 
 namespace loquat {
 
@@ -21,7 +22,7 @@ public:
 private:
 	size_t m_actual_size;
 	std::vector<value_type> m_values;
-	behavior_type m_behavior;
+	range_query_behavior_wrapper<behavior_type> m_behavior;
 
 
 	void initialize(){
