@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iterator>
 #include "loquat/math/bitmanip.hpp"
+#include "loquat/container/lazy_range_query_behavior.hpp"
 
 namespace loquat {
 
@@ -19,7 +20,7 @@ private:
 	size_t m_actual_size;
 	std::vector<value_type> m_values;
 	std::vector<modifier_type> m_modifiers;
-	behavior_type m_behavior;
+	lazy_range_query_behavior_wrapper<behavior_type> m_behavior;
 
 	void initialize(){
 		const int n = m_values.size() / 2;
