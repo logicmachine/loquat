@@ -25,6 +25,30 @@ private:
 		static const bool value = decltype(check(std::declval<T>()))::value;
 	};
 
+	template <typename T>
+	struct has_reverse_value {
+	private:
+		template <typename U>
+		static auto check(const U& x) -> decltype(
+			x.reverse_value(std::declval<value_type>()),
+			std::true_type());
+		static std::false_type check(...);
+	public:
+		static const bool value = decltype(check(std::declval<T>()))::value;
+	};
+
+	template <typename T>
+	struct has_reverse_modifier {
+	private:
+		template <typename U>
+		static auto check(const U& x) -> decltype(
+			x.reverse_modifier(std::declval<modifier_type>()),
+			std::true_type());
+		static std::false_type check(...);
+	public:
+		static const bool value = decltype(check(std::declval<T>()))::value;
+	};
+
 	Impl m_impl;
 
 	template <typename T>
@@ -57,6 +81,34 @@ private:
 		-> decltype(impl.modify(v, m))
 	{
 		return impl.modify(v, m);
+	}
+
+	template <typename T>
+	static auto reverse_value_helper(const T& impl, const value_type& x)
+		-> typename std::enable_if<has_reverse_value<T>::value, value_type>::type
+	{
+		return impl.reverse_value(x);
+	}
+
+	template <typename T>
+	static auto reverse_value_helper(const T&, const value_type& x)
+		-> typename std::enable_if<!has_reverse_value<T>::value, value_type>::type
+	{
+		return x;
+	}
+
+	template <typename T>
+	static auto reverse_modifier_helper(const T& impl, const modifier_type& m)
+		-> typename std::enable_if<has_reverse_modifier<T>::value, modifier_type>::type
+	{
+		return impl.reverse_modifier(m);
+	}
+
+	template <typename T>
+	static auto reverse_modifier_helper(const T&, const modifier_type& m)
+		-> typename std::enable_if<!has_reverse_modifier<T>::value, modifier_type>::type
+	{
+		return m;
 	}
 
 public:
