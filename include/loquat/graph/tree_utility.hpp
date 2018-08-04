@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <algorithm>
 #include "loquat/graph/adjacency_list.hpp"
 #include "loquat/graph/breadth_first_search.hpp"
 
