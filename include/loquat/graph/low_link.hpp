@@ -10,8 +10,6 @@ class low_link {
 public:
 	using index_type = size_t;
 
-	static constexpr index_type nil = std::numeric_limits<index_type>::max();
-
 private:
 	std::vector<index_type> m_ord;
 	std::vector<index_type> m_low;
@@ -35,7 +33,7 @@ public:
 				: u(u), p(p), i(i), m(m)
 			{ }
 		};
-		const auto nil = std::numeric_limits<vertex_t>::max();
+		const auto nil = std::numeric_limits<index_type>::max();
 		const auto n = g.size();
 		index_type next_ord = 0;
 		for(vertex_t root = 0; root < n; ++root){
@@ -56,7 +54,6 @@ public:
 						frame_stack.emplace(v, f.u, 0, 0);
 					}else{
 						frame_stack.emplace(f.u, f.p, f.i + 1, f.m + 1);
-						if(f.m >= 1){ frame_stack.emplace(v, f.u, 0, 0); }
 					}
 				}else{
 					for(const auto& e : g[f.u]){

@@ -11,7 +11,6 @@ template <typename EdgeType>
 belonging_components_t biconnected_components(
 	const adjacency_list<EdgeType>& graph)
 {
-	const auto nil = low_link::nil;
 	const auto n = graph.size();
 	const low_link ll(graph);
 	std::vector<vertex_t> ord2vertex(n);
@@ -22,7 +21,7 @@ belonging_components_t biconnected_components(
 		const auto v = ord2vertex[ll.low(u)];
 		ds.unite(u, v);
 	}
-	belonging_components_t bcc(n, nil);
+	belonging_components_t bcc(n);
 	for(vertex_t v = 0; v < n; ++v){ bcc[v] = ds.find(v); }
 	return bcc;
 }
