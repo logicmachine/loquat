@@ -11,18 +11,6 @@ namespace loquat {
 namespace detail {
 
 template <typename EdgeType>
-auto weight(const EdgeType& e) -> decltype(std::declval<EdgeType>().weight) {
-	return e.weight;
-}
-
-template <typename EdgeType>
-auto weight(const EdgeType&)
-	-> typename std::enable_if<!has_weight<EdgeType>::value, size_t>::type
-{
-	return 1;
-}
-
-template <typename EdgeType>
 struct tree_diameter_behavior {
 	using weight_type = decltype(weight(std::declval<EdgeType>()));
 	using state_type = top_k<weight_type, 2, std::greater<weight_type>>;
@@ -64,9 +52,9 @@ struct tree_diameter_behavior {
 
 template <typename EdgeType>
 auto tree_diameter(const adjacency_list<EdgeType>& graph)
-	-> decltype(detail::weight(std::declval<EdgeType>()))
+	-> decltype(weight(std::declval<EdgeType>()))
 {
-	using weight_type = decltype(detail::weight(std::declval<EdgeType>()));
+	using weight_type = decltype(weight(std::declval<EdgeType>()));
 	const auto dp = undirected_tree_dynamic_programming(
 		graph, detail::tree_diameter_behavior<EdgeType>());
 	weight_type result = 0;
