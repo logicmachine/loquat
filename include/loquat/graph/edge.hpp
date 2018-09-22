@@ -1,3 +1,6 @@
+/**
+ * @file edge.hpp
+ */
 #pragma once
 #include "loquat/graph/types.hpp"
 
@@ -18,6 +21,12 @@ struct to_ {
 using to = to_;
 
 
+/**
+ * @brief 辺が重みを持つことを表す構造体。
+ * @tparam T 重みを表す値の型。
+ *
+ * 通常は対応するエイリアスである loquat::edge_param::weight を使用してください。
+ */
 template <typename T>
 struct weight_ {
 
@@ -35,6 +44,12 @@ template <typename T>
 using weight = weight_<T>;
 
 
+/**
+ * @brief 辺が容量を持つことを表す構造体。
+ * @tparam T 容量を表す値の型。
+ *
+ * 通常は対応するエイリアスである loquat::edge_param::capacity を使用してください。
+ */
 template <typename T>
 struct capacity_ {
 
@@ -90,13 +105,27 @@ struct edge_param_wrapper<T> : public T {
 }
 
 
+/**
+ * @brief 拡張可能な辺データ型。
+ * @tparam Params  辺が持つ付加情報を表す型のリスト。
+ */
 template <typename... Params>
 struct edge : public detail::edge_param_wrapper<edge_param::to_, Params...> {
 
+	/**
+	 * @brief デフォルトコンストラクタ。
+	 *
+	 * 辺の持つすべてのパラメータがデフォルト値で初期化されます。
+	 */
 	edge()
 		: detail::edge_param_wrapper<edge_param::to_, Params...>()
 	{ }
 
+	/**
+	 * @brief パラメータ設定を伴うコンストラクタ。
+	 * @param args 辺のパラメータとして設定する値のリスト。
+	 *             先頭要素が辺のさす先 (to) それ以降は Params に指定した順番で渡します。
+	 */
 	template <typename... Args>
 	explicit edge(Args&&... args)
 		: detail::edge_param_wrapper<edge_param::to_, Params...>(

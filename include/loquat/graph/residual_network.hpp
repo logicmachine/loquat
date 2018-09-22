@@ -1,3 +1,6 @@
+/**
+ * @file residual_network.hpp
+ */
 #pragma once
 #include <type_traits>
 #include "loquat/graph/edge_traits.hpp"
@@ -22,6 +25,10 @@ auto negate_weight(EdgeType&)
 }
 
 
+/**
+ * @brief 逆辺についての情報を付加した辺データ型。
+ * @tparam EdgeType 基となる辺データ型。
+ */
 template <typename EdgeType>
 struct residual_edge : public EdgeType {
 
@@ -29,17 +36,33 @@ struct residual_edge : public EdgeType {
 
 	size_t rev;
 
+	/**
+	 * @brief デフォルトコンストラクタ。
+	 *
+	 * 全ての辺パラメータをデフォルト値で初期化します。
+	 */
 	residual_edge()
 		: base_type()
 		, rev(0)
 	{ }
 
+	/**
+	 * @brief パラメータ設定を伴うコンストラクタ。
+	 * @param to   辺の終端となる頂点。
+	 * @param rev  逆辺を示すインデックス。
+	 * @param args 残りの辺パラメータのリスト。
+	 */
 	template <typename... Args>
 	residual_edge(vertex_t to, size_t rev, Args&&... args)
 		: base_type(to, std::forward<Args>(args)...)
 		, rev(rev)
 	{ }
 
+	/**
+	 * @brief パラメータ設定を伴うコンストラクタ。
+	 * @param e   逆辺の情報を付加する前の辺データ。
+	 * @param rev 逆辺を示すインデックス。
+	 */
 	residual_edge(const base_type& e, size_t rev)
 		: base_type(e)
 		, rev(rev)
@@ -48,6 +71,20 @@ struct residual_edge : public EdgeType {
 };
 
 
+/**
+ * @brief 残余ネットワークの生成。
+ * @param graph 逆辺を追加する前のグラフデータ。
+ * @tparam EdgeType 元ネットワークの辺データ型。
+ *
+ * グラフ graph のすべての辺について対応する逆辺を追加したグラフを生成します。
+ * 逆辺のパラメータはそれぞれ以下のルールに沿って求められます:
+ *   - 容量 (capacity): 0
+ *   - 重み (weight, 存在する場合のみ): 符号を反転した値
+ *   - その他: 元の辺と同じ値
+ *
+ * また、元グラフに存在していた辺に対応する辺のインデックスは元グラフと同じとなります。
+ * つまり、<tt>graph[u][i]</tt>が存在する場合、<tt>residual[u][i]</tt>は<tt>graph[u][i]</tt>と同じ辺を示しています。
+ */
 template <typename EdgeType>
 adjacency_list<residual_edge<EdgeType>>
 make_residual(const adjacency_list<EdgeType>& graph){
