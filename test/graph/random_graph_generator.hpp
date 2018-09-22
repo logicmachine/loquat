@@ -119,6 +119,22 @@ void randomize_capacities(
 	}
 }
 
+
+template <typename EdgeType>
+adjacency_list<EdgeType> make_undirected(const adjacency_list<EdgeType>& g){
+	const auto n = g.size();
+	adjacency_list<EdgeType> out(n);
+	for(vertex_t u = 0; u < n; ++u){
+		for(const auto& e : g[u]){
+			auto f = e;
+			f.to = u;
+			out.add_edge(u, e);
+			out.add_edge(e.to, f);
+		}
+	}
+	return out;
+}
+
 }
 }
 
