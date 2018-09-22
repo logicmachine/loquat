@@ -22,7 +22,7 @@ sssp_bellman_ford(vertex_t source, const adjacency_list<EdgeType>& graph){
 			if(loquat::is_positive_infinity(result[u])){ continue; }
 			for(const auto& e : graph[u]){
 				const auto v = e.to;
-				if(result[u] + e.weight < result[v]){
+				if((result[u] + e.weight) < result[v]){
 					result[v] = result[u] + e.weight;
 					finished = false;
 				}
