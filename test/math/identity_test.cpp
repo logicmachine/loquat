@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <cmath>
 #include "loquat/math/identity.hpp"
 
 TEST(IdentityTest, Plus){

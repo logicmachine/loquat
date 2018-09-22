@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include <functional>
+#include <numeric>
+#include <random>
 #include <cstdint>
 #include "loquat/container/lazy_segment_tree.hpp"
 

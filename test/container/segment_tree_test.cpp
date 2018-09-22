@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <functional>
+#include <numeric>
 #include <cstdint>
 #include "loquat/container/segment_tree.hpp"
 #include "loquat/container/range_query_helper.hpp"

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <functional>
+#include <random>
 #include <cstdint>
 #include "loquat/container/disjoint_set.hpp"
 
