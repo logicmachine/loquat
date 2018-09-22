@@ -41,3 +41,24 @@ TEST(EdgeTest, DefaultConstruct){
 	EXPECT_EQ(0,   e.capacity);
 }
 
+TEST(EdgeTest, ConstCopyConstruct){
+	using edge = loquat::edge<
+		loquat::edge_param::weight<int>,
+		loquat::edge_param::capacity<int>>;
+	const edge e(1, 2, 3);
+	edge e2(e);
+	EXPECT_EQ(1u, e2.to);
+	EXPECT_EQ(2,  e2.weight);
+	EXPECT_EQ(3,  e2.capacity);
+}
+
+TEST(EdgeTest, CopyConstruct){
+	using edge = loquat::edge<
+		loquat::edge_param::weight<int>,
+		loquat::edge_param::capacity<int>>;
+	edge e(1, 2, 3);
+	edge e2(e);
+	EXPECT_EQ(1u, e2.to);
+	EXPECT_EQ(2,  e2.weight);
+	EXPECT_EQ(3,  e2.capacity);
+}

@@ -34,6 +34,10 @@ struct weight_ {
 
 	weight_type weight;
 
+	weight_(const weight_<T>& w)
+		: weight(w.weight)
+	{ }
+
 	explicit weight_(const weight_type& w = weight_type())
 		: weight(w)
 	{ }
@@ -74,9 +78,17 @@ namespace detail {
 template <typename T, typename... Params>
 struct edge_param_wrapper : public T, edge_param_wrapper<Params...> {
 
+	using self_type = edge_param_wrapper<T, Params...>;
+	using next_type = edge_param_wrapper<Params...>;
+
 	edge_param_wrapper()
 		: T()
-		, edge_param_wrapper<Params...>()
+		, next_type()
+	{ }
+
+	edge_param_wrapper(const self_type& e)
+		: T(static_cast<const T&>(e))
+		, next_type(static_cast<const next_type&>(e))
 	{ }
 
 	template <typename U, typename... Args>
@@ -91,8 +103,14 @@ struct edge_param_wrapper : public T, edge_param_wrapper<Params...> {
 template <typename T>
 struct edge_param_wrapper<T> : public T {
 
+	using self_type = edge_param_wrapper<T>;
+
 	edge_param_wrapper()
 		: T()
+	{ }
+
+	edge_param_wrapper(const self_type& e)
+		: T(e)
 	{ }
 
 	template <typename U>
@@ -112,24 +130,33 @@ struct edge_param_wrapper<T> : public T {
 template <typename... Params>
 struct edge : public detail::edge_param_wrapper<edge_param::to_, Params...> {
 
+	using self_type = edge<Params...>;
+	using wrapper_type = detail::edge_param_wrapper<edge_param::to_, Params...>;
+
 	/**
 	 * @brief デフォルトコンストラクタ。
 	 *
 	 * 辺の持つすべてのパラメータがデフォルト値で初期化されます。
 	 */
-	edge()
-		: detail::edge_param_wrapper<edge_param::to_, Params...>()
+	edge() : wrapper_type() { }
+
+	/**
+	 * @brief コピーコンストラクタ。
+	 *
+	 * 辺の持つすべてのパラメータがコピーされます。
+	 */
+	edge(const self_type& e)
+		: wrapper_type(static_cast<const wrapper_type&>(e))
 	{ }
 
 	/**
 	 * @brief パラメータ設定を伴うコンストラクタ。
-	 * @param args 辺のパラメータとして設定する値のリスト。
-	 *             先頭要素が辺のさす先 (to) それ以降は Params に指定した順番で渡します。
+	 * @param rest 辺のパラメータとして設定する値のリスト。
+	 *             Params に指定した順番で渡します。
 	 */
 	template <typename... Args>
-	explicit edge(Args&&... args)
-		: detail::edge_param_wrapper<edge_param::to_, Params...>(
-			std::forward<Args>(args)...)
+	explicit edge(vertex_t to, Args&&... rest)
+		: wrapper_type(to, std::forward<Args>(rest)...)
 	{ }
 
 };
