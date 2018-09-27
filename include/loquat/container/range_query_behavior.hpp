@@ -42,7 +42,7 @@ private:
 	static auto reverse_helper(const T& impl, size_t n, const value_type& x)
 		-> decltype(impl.reverse(n, x))
 	{
-		return impl.reverse(x);
+		return impl.reverse(n, x);
 	}
 
 	template <typename T>
