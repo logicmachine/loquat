@@ -14,7 +14,7 @@ TEST(LowestCommonAncestorTest, Random){
 			loquat::test::random_tree_generator<edge>(n)
 				.generate(engine);
 		const loquat::vertex_t root = 0;
-		const loquat::lowest_common_ancestor lca(graph, root);
+		const loquat::lowest_common_ancestor lca(root, graph);
 		std::vector<loquat::vertex_t> parents(n, n);
 		loquat::breadth_first_search(
 			graph, root,

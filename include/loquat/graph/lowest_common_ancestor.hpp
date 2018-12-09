@@ -20,7 +20,7 @@ public:
 	{ }
 
 	template <typename EdgeType>
-	lowest_common_ancestor(const adjacency_list<EdgeType>& g, vertex_t root)
+	lowest_common_ancestor(vertex_t root, const adjacency_list<EdgeType>& g)
 		: m_depth(g.size())
 		, m_ancestor_table()
 	{
