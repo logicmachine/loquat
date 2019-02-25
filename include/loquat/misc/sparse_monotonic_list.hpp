@@ -90,7 +90,7 @@ public:
 		const auto& kcomp = m_key_comparator;
 		const auto& vcomp = m_value_comparator;
 		auto it = m_points.lower_bound(key);
-		if(!kcomp(it->first, key) && !kcomp(key, it->first)){
+		if(it != m_points.end() && !kcomp(it->first, key) && !kcomp(key, it->first)){
 			if(!vcomp(it->second, value)){ return false; }
 			it = m_points.erase(it);
 		}else if(it != m_points.begin()){
